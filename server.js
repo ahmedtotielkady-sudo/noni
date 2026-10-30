@@ -47,7 +47,7 @@ const app = express(), server = http.createServer(app);
 app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: { useDefaults: true, directives: { 'connect-src': ["'self'", 'ws:', 'wss:'], 'upgrade-insecure-requests': null } } }));
 app.use(express.json({ limit: '20kb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+['index.html', 'app.js', 'style.css'].forEach(f => app.get(f === 'index.html' ? ['/', '/index.html'] : '/' + f, (q, r) => r.sendFile(path.join(__dirname, f))));
 app.get('/health', (q, r) => r.json({ ok: true }));
 
 const authLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 40, standardHeaders: true, legacyHeaders: false, message: { error: 'محاولات كثيرة، حاول لاحقًا' } });
